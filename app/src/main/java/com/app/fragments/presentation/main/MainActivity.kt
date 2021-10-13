@@ -2,49 +2,44 @@ package com.app.fragments.presentation.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.app.fragments.R
-import com.app.fragments.presentation.one.FragmentOne
-import com.app.fragments.presentation.two.FragmentTwo
+import com.app.fragments.presentation.feedback.FragmentFeedback
+import com.app.fragments.presentation.home.FragmentHome
+import com.app.fragments.presentation.settings.FragmentSettings
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {
 
-    private lateinit var btnOne : Button
-    private lateinit var btnTwo: Button
+    private lateinit var navigation : BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        replaceFragment(FragmentOne(), null)
-
-        btnOne = findViewById(R.id.btnOne)
-        btnOne.setOnClickListener(this)
-
-        btnTwo = findViewById(R.id.btnTwo)
-        btnTwo.setOnClickListener(this)
+        navigation = findViewById(R.id.navigation)
+        navigation.setOnItemSelectedListener(this)
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.btnOne -> {
-                val bundle = Bundle()
-                bundle.putString("android", "Android Developer")
-                replaceFragment(FragmentOne(), bundle)
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.home -> {
+                replaceFragment(FragmentHome())
             }
-            R.id.btnTwo -> {
-                val bundle = Bundle()
-                bundle.putString("ios", "iOS Developer")
-                replaceFragment(FragmentTwo(), bundle)
+            R.id.feedback -> {
+                replaceFragment(FragmentFeedback())
+            }
+            R.id.settings -> {
+                replaceFragment(FragmentSettings())
             }
         }
+        return true
     }
 
-    private fun replaceFragment(fragment: Fragment, data: Bundle?) {
-        fragment.arguments = data
+    private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().apply {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             replace(R.id.container, fragment)
